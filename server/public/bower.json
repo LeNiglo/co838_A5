@@ -1,0 +1,22 @@
+{
+  "name": "gtvl2_a5",
+  "homepage": "https://github.com/LeNiglo/co838_A5",
+  "authors": [
+    "Guillaume Lefrant <lefrantguillaume@gmail.com>"
+  ],
+  "description": "",
+  "main": "javascripts/app.js",
+  "moduleType": [],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "AdminLTE": "admin-lte#~2.3.3"
+  }
+}
