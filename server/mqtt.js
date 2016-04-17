@@ -10,7 +10,6 @@ module.exports = function (db) {
 
 	client.on('connect', () => {
 		client.subscribe('gtvl2_temperature');
-		// client.publish('gtvl2_temperature', '1234-56-7890;' + 20);
 		console.log('MQTT Socket connected');
 		client.isConnected = true;
 	});
@@ -21,25 +20,28 @@ module.exports = function (db) {
 		switch (topic) {
 			case 'gtvl2_temperature':
 			try {
-				var deviceId = message.toString().substr(0, message.toString().lastIndexOf(';'));
-				var temp = parseInt(message.toString().substr(1 + message.toString().lastIndexOf(';')));
+				if (/^([A-Z0-9]{4}-[A-Z0-9]{2}-[A-Z0-9]{4});([0-9]{1,3})$/.test(message.toString())) {
 
-				db.get('devices').findOne({deviceId: deviceId}).success((doc) => {
-					if (!doc) {
-						db.get('devices').insert({
-							deviceId: deviceId,
-							products: []
-						})
-					}
-				});
+					var deviceId = message.toString().substr(0, message.toString().lastIndexOf(';'));
+					var temp = parseInt(message.toString().substr(1 + message.toString().lastIndexOf(';')));
 
-				db.get('temp_readings').insert({deviceId: deviceId, temperature: temp, createdAt: new Date()}, (err, result) => {
-					if (!err && result) {
-						console.log(result);
-					} else {
-						console.error(err);
-					}
-				});
+					db.get('devices').findOne({deviceId: deviceId}).success((doc) => {
+						if (!doc) {
+							db.get('devices').insert({
+								deviceId: deviceId,
+								products: []
+							})
+						}
+					});
+
+					db.get('temp_readings').insert({deviceId: deviceId, temperature: temp, createdAt: new Date()}, (err, result) => {
+						if (!err && result) {
+							console.log(result);
+						} else {
+							console.error(err);
+						}
+					});
+				}
 			} catch (e) {
 				console.error(e);
 			}
