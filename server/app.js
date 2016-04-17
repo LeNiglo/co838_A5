@@ -1,9 +1,9 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var moment = require('moment');
 
 var app = express();
 
@@ -12,17 +12,30 @@ var db = require('monkii')(process.env.MONGO_URL || 'localhost:27017/co838_a5');
 var mqttClient = require('./mqtt')(db);
 
 // view engine setup
+var hbs = require('express-handlebars').create({
+	extname: 'hbs',
+	defaultLayout: 'main.hbs',
+	helpers: {
+		dateFormat: (date) => {
+			return moment(date).format('lll');
+		},
+		fromNow: (date) => {
+			return moment(date).fromNow();
+		},
+		getTime: (date) => {
+			return new Date(date).getTime();
+		}
+	}
+});
 app.set('views', path.join(__dirname, 'views'));
+app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
-app.set('view options', { layout: 'layouts/main' });
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(require('serve-favicon')(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(require('less-middleware')(path.join(__dirname, 'public/stylesheets'), {debug: true, force: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req,res,next) => {
@@ -31,7 +44,7 @@ app.use((req,res,next) => {
 });
 
 app.use('/', require('./routes/index'));
-app.use('/users', require('./routes/users'));
+app.use('/products', require('./routes/products'));
 app.use('/api', require('./routes/api'));
 
 // catch 404 and forward to error handler
@@ -47,6 +60,7 @@ app.use((req, res, next) => {
 // will print stacktrace
 if (app.get('env') === 'development') {
 	app.use((err, req, res, next) => {
+		console.error(err);
 		res.status(err.status || 500);
 		res.render('error', {
 			message: err.message,

@@ -1,0 +1,41 @@
+<section class="content-header">
+	<h1>MediTemp <small>Dashboard</small></h1>
+</section>
+
+<section class="content">
+
+	<div class="row">
+		{{#each devices}}
+		<div class="col-md-6 col-xs-6 col-lg-4">
+			<div class="box box-primary device" data-id="{{deviceId}}">
+				<div class="box-header with-border">
+					<i class="fa fa-bar-chart-o"></i>
+
+					<h3 class="box-title">Temperature readings for {{device.deviceId}}</h3>
+
+					<div class="box-tools pull-right">
+						<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+					</div>
+				</div>
+				<div class="box-body no-padding">
+					<div class="sparkline" data-type="line" data-spot-Radius="3" data-highlight-Spot-Color="#f31010" data-highlight-Line-Color="#222" data-spot-Color="#f31010" data-offset="90" data-width="100%" data-height="150px" data-line-Width="2" data-line-Color="#39CCCC" data-fill-Color="rgba(57, 204, 204, 0.08)">
+						{{#each temperatures}}{{temperature}}{{#unless @last}},{{/unless}}{{/each}}
+					</div>
+				</div>
+				<div class="box-footer no-padding">
+					<table class="table table-hover" style="margin-bottom:0px;">
+						<tbody>
+							{{#each device.products}}
+								<tr>
+									<td>{{name}}</td>
+								</tr>
+							{{/each}}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		{{/each}}
+	</div>
+
+</section>

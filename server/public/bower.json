@@ -5,7 +5,7 @@
     "Guillaume Lefrant <lefrantguillaume@gmail.com>"
   ],
   "description": "",
-  "main": "javascripts/app.js",
+  "main": "javascripts/main.js",
   "moduleType": [],
   "license": "MIT",
   "private": true,
@@ -17,6 +17,8 @@
     "tests"
   ],
   "dependencies": {
-    "AdminLTE": "admin-lte#~2.3.3"
+    "AdminLTE": "admin-lte#~2.3.3",
+    "bootstrap": "^3.3.6",
+    "jquery": "^2.2.3"
   }
 }
