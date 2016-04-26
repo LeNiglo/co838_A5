@@ -50,7 +50,7 @@
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="box box-primary">
-				<form class="form" action="/products/add" method="post">
+				<form class="form" action="/products" method="POST" id="add-product-form">
 					<div class="box-header with-border">
 						<i class="fa fa-edit"></i>
 
@@ -77,11 +77,17 @@
 						</div>
 
 						<div class="form-group">
+							<label for="enableAllDevices">
+								<input type="checkbox" id="enableAllDevices" /> Enable All Devices
+							</label>
+						</div>
+
+						<div class="form-group">
 							<label for="device">Device</label>
 							<select class="form-control input-lg" id="device" name="device" required="true">
 								<option value=""></option>
 								{{#each devices}}
-								<option value="{{deviceId}}">{{deviceId}} ({{currentTemp}} °C)</option>
+								<option value="{{deviceId}}" data-temp="{{currentTemp}}">{{deviceId}} ({{currentTemp}} °C)</option>
 								{{/each}}
 							</select>
 						</div>

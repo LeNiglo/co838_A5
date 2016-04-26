@@ -2,6 +2,7 @@ var mqtt = require('mqtt');
 var privateId = process.env.PRIVATE_ID || generateId();
 var temp = 1;
 var interval = undefined;
+var intervalDelay = 60000;
 
 function generateId() {
 	var id = '';
@@ -16,9 +17,16 @@ function generateId() {
 }
 
 function publishData() {
-	temp += Math.round(Math.random() * 6 - 3);
+	temp += Math.round(Math.random() * 2) - 1;
 	console.log(privateId, temp);
-	client.publish('gtvl2_temperature', privateId + ';' + temp);
+	client.publish('meditemp/gtvl2/temperature', privateId + ';' + temp);
+}
+
+function changeInterval() {
+	if (interval) { clearInterval(interval); }
+	interval = setInterval(() => {
+		publishData();
+	}, intervalDelay);
 }
 
 var client = mqtt.connect([
@@ -26,13 +34,22 @@ var client = mqtt.connect([
 ]);
 
 client.on('connect', () => {
-	// client.subscribe('gtvl2_temperature');
-	client.subscribe('gtvl2_settings');
+	client.subscribe('meditemp/gtvl2/settings');
 	console.log("Simulator connected to MQTT Socket with id " + privateId);
 	publishData();
-	interval = setInterval(() => {
-		publishData();
-	}, 60000);
+	changeInterval();
+});
+
+client.on('message', (topic, message) => {
+	switch (toic) {
+		case 'meditemp/gtvl2/settings':
+		var settings = JSON.parse(message.toString());
+		intervalDelay = settings.delay;
+		changeInterval();
+		break;
+		default:
+		break;
+	}
 });
 
 client.on('close', () => {

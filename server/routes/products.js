@@ -21,12 +21,14 @@ router.get('/', (req, res, next) => {
 				return device;
 			});
 
-			res.render('products', { devices: results });
+			var sortedResults = _.sortBy(results, 'currentTemp');
+
+			res.render('products', { devices: sortedResults });
 		});
 	});
 });
 
-router.post('/add', (req, res, next) => {
+router.post('/', (req, res, next) => {
 	var product = {
 		name: req.body.productName,
 		temperature: req.body.productTemp,
@@ -38,7 +40,7 @@ router.post('/add', (req, res, next) => {
 		update: {$push: {products: product} }
 	}, (error, doc) => {
 		if (error) console.error(error);
-		res.redirect('./');
+		res.redirect('/products');
 	});
 
 });

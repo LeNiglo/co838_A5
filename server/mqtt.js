@@ -9,22 +9,25 @@ module.exports = function (db) {
 	client.isConnected = false;
 
 	client.on('connect', () => {
-		client.subscribe('gtvl2_temperature');
+		client.subscribe('meditemp/gtvl2/temperature');
+		client.subscribe('meditemp/gtvl2/alert');
 		console.log('MQTT Socket connected');
 		client.isConnected = true;
 	});
 
 	client.on('message', (topic, message) => {
-		console.log(topic, message.toString());
+
+		console.log("Received " + topic, message.toString());
 
 		switch (topic) {
-			case 'gtvl2_temperature':
+			case 'meditemp/gtvl2/temperature':
 			try {
 				if (/^([A-Z0-9]{4}-[A-Z0-9]{2}-[A-Z0-9]{4});([0-9]{1,3})$/.test(message.toString())) {
 
 					var deviceId = message.toString().substr(0, message.toString().lastIndexOf(';'));
 					var temp = parseInt(message.toString().substr(1 + message.toString().lastIndexOf(';')));
 
+					// If the device doesn't exist, create it.
 					db.get('devices').findOne({deviceId: deviceId}).success((doc) => {
 						if (!doc) {
 							db.get('devices').insert({
@@ -34,6 +37,7 @@ module.exports = function (db) {
 						}
 					});
 
+					// Insert the new reading
 					db.get('temp_readings').insert({deviceId: deviceId, temperature: temp, createdAt: new Date()}, (err, result) => {
 						if (!err && result) {
 							console.log(result);
@@ -44,6 +48,15 @@ module.exports = function (db) {
 				}
 			} catch (e) {
 				console.error(e);
+			}
+			break;
+			case 'meditemp/gtvl2/alert':
+			var alert = JSON.parse(message.toString());
+			alert.seen = false;
+			alert.createdAt = new Date();
+
+			if (alert.product && alert.device) {
+				db.get('alerts').insert(alert);
 			}
 			break;
 			default:

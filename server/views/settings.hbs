@@ -1,0 +1,35 @@
+<section class="content-header">
+	<h1>MediTemp <small>Settings</small></h1>
+</section>
+
+<section class="content">
+
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="box box-primary">
+				<form class="form" action="/settings" method="POST" id="change-settings">
+					<div class="box-header with-border">
+						<i class="fa fa-cog"></i>
+
+						<h3 class="box-title">Settings</h3>
+					</div>
+					<div class="box-body">
+						<div class="form-group">
+							<label for="delay">Refresh Delay (ms)</label>
+							<input type="number" name="delay" id="delay" min="1000" max="3600000" class="form-control" value="{{settings.delay}}" />
+						</div>
+
+						<div class="form-group">
+							<label for="adminEmail">Admin Email</label>
+							<input type="email" name="adminEmail" id="adminEmail" class="form-control" value="{{settings.adminEmail}}" />
+						</div>
+					</div>
+					<div class="box-footer with-border text-right">
+						<input type="submit" class="btn btn-primary btn-flat btn-lg" />
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+</section>

@@ -8,9 +8,9 @@ var app = express();
 
 var db = require('monkii')(process.env.MONGO_URL || 'localhost:27017/co838_a5');
 
-var mqttClient = require('./mqtt')(db);
+app.set('mqttClient', require('./mqtt')(db));
 
-// view engine setup
+// Setup view engine
 var hbs = require('express-handlebars').create({
 	extname: 'hbs',
 	layoutsDir: 'views/layouts/',
@@ -27,7 +27,7 @@ var hbs = require('express-handlebars').create({
 			return new Date(date).getTime();
 		},
 		ifMqttConnected: (block) => {
-			if (mqttClient.isConnected) {
+			if (app.get('mqttClient').isConnected) {
 				return block.fn(this);
 			} else {
 				return block.inverse(this);
@@ -39,7 +39,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
 
-var backgroundCheck = undefined;
+// Set Default settings
+app.set('adminEmail', 'gtvl2@kent.ac.uk');
+app.set('deviceDelay', 900000);
+
+// Configure mailer
 if (process.env.MAILER_USERNAME && process.env.MAILER_HOST) {
 	require('express-mailer').extend(app, {
 		from: 'MediTemp <medi.temp@host.local>',
@@ -52,10 +56,9 @@ if (process.env.MAILER_USERNAME && process.env.MAILER_HOST) {
 			pass: process.env.MAILER_PASSWORD
 		}
 	});
-
-	backgroundCheck = require('./background')(app, db);
-	// backgroundCheck.checkProducts();
 }
+// Setup background task
+var backgroundCheck = require('./background')(app, db);
 
 app.use(require('serve-favicon')(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(require('morgan')('dev'));
@@ -64,13 +67,20 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Custom middlewares
+app.use((req,res,next) => { req.db = db; next(); });
 app.use((req,res,next) => {
-	req.db = db;
+	req.db.get('alerts').col.count({seen: false}, {}, (error, result) => {
+		if (error) console.error(error);
+		res.locals.alertCount = result;
+	});
 	next();
 });
 
+// Set Router files
 app.use('/', require('./routes/index'));
 app.use('/products', require('./routes/products'));
+app.use('/settings', require('./routes/settings'));
 app.use('/api', require('./routes/api'));
 
 // catch 404 and forward to error handler

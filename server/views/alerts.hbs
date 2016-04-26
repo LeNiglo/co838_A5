@@ -1,0 +1,45 @@
+<section class="content-header">
+	<h1>MediTemp <small>Alerts</small></h1>
+</section>
+
+<section class="content">
+
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="box box-danger">
+				<div class="box-header with-border">
+					<i class="fa fa-bell"></i>
+
+					<h3 class="box-title">Alerts</h3>
+				</div>
+				<div class="box-body no-padding">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Product Name</th>
+								<th>Product Temp.</th>
+								<th>Device ID</th>
+								<th>Device Temp.</th>
+								<th>Date</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							{{#each alerts}}
+							<tr>
+								<td>{{product.name}}</td>
+								<td>{{product.temperature}} &plusmn; {{product.margin}} °C</td>
+								<td>{{device.privateId}}</td>
+								<td>{{device.currentTemp}}</td>
+								<td>{{fromNow createdAt}}</td>
+								<td>{{#unless seen}}<i class="fa fa-star text-red"></i>{{/unless}}</td>
+							</tr>
+							{{/each}}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</section>

@@ -12,6 +12,20 @@
 					<i class="fa fa-briefcase"></i> <span>Products</span>
 				</a>
 			</li>
+			<li class="route" data-route="/alerts">
+				<a href="/alerts">
+					<i class="fa fa-bell"></i> <span>Alerts</span>
+					{{#if alertCount}}
+					<small class="label pull-right bg-red">{{ alertCount }}</small>
+					{{/if}}
+				</a>
+			</li>
+			<li class="header">SETTINGS</li>
+			<li class="route" data-route="/settings">
+				<a href="/settings">
+					<i class="fa fa-cog"></i> <span>Settings</span>
+				</a>
+			</li>
 		</ul>
 	</section>
 </aside>
