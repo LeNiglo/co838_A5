@@ -44,7 +44,8 @@ app.set('adminEmail', 'gtvl2@kent.ac.uk');
 app.set('deviceDelay', 900000);
 
 // Configure mailer
-if (process.env.MAILER_USERNAME && process.env.MAILER_HOST) {
+app.set('emailEnabled', (process.env.MAILER_USERNAME && process.env.MAILER_PASSWORD && process.env.MAILER_PORT && process.env.MAILER_HOST));
+if (app.get('emailEnabled')) {
 	require('express-mailer').extend(app, {
 		from: 'MediTemp <medi.temp@host.local>',
 		host: process.env.MAILER_HOST,

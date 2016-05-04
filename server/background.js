@@ -23,7 +23,7 @@ module.exports = function(app, db) {
 							// If there is a danger for the product, send an email + publish alert on MQTT channel.
 							// Possibility to send a push notification to smartphones via an App
 
-							if (process.env.MAILER_USERNAME && process.env.MAILER_HOST) {
+							if (app.get('emailEnabled')) {
 								app.mailer.send('emails/alert', {
 									to: app.get('adminEmail'),
 									subject: 'Alert for ' + product.name,
