@@ -2,7 +2,9 @@ var express = require('express');
 var _ = require('underscore');
 var router = express.Router();
 
-/* GET settings page. */
+/**
+*	GET settings page.
+*/
 router.get('/', (req, res, next) => {
 
 	var settings = {
@@ -13,6 +15,9 @@ router.get('/', (req, res, next) => {
 	res.render('settings', { settings: settings });
 });
 
+/**
+*	POST change settings.
+*/
 router.post('/', (req, res, next) => {
 	req.app.set('adminEmail', req.body.adminEmail);
 	if (req.app.get('deviceDelay') != parseInt(req.body.delay)) {

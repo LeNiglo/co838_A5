@@ -2,7 +2,9 @@ var express = require('express');
 var _ = require('underscore');
 var router = express.Router();
 
-/* GET home page */
+/**
+*	GET home page
+*/
 router.get('/', (req, res, next) => {
 
 	req.db.get('devices').find({}, {}, (error, results) => {
@@ -23,7 +25,9 @@ router.get('/', (req, res, next) => {
 	});
 });
 
-/* GET alerts listing */
+/**
+*	GET alerts listing
+*/
 router.get('/alerts', (req, res, next) => {
 
 	req.db.get('alerts').find({}, {sort: {createdAt: -1}}, (error, results) => {

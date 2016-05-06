@@ -2,7 +2,9 @@ var express = require('express');
 var _ = require('underscore');
 var router = express.Router();
 
-/* GET products listing. */
+/**
+*	GET products listing.
+*/
 router.get('/', (req, res, next) => {
 
 	req.db.get('devices').find({}, {}, (error, results) => {
@@ -15,7 +17,7 @@ router.get('/', (req, res, next) => {
 				device.currentTemp = doc.temperature;
 
 				_.map(device.products, (product) => {
-					product.warning = (doc.temperature >= product.temperature + product.margin || doc.temperature <= product.temperature - product.margin);
+					product.warning = ((doc.temperature >= product.temperature + product.margin) || (doc.temperature <= product.temperature - product.margin));
 					return product;
 				});
 				return device;
@@ -28,11 +30,14 @@ router.get('/', (req, res, next) => {
 	});
 });
 
+/**
+*	POST add product
+*/
 router.post('/', (req, res, next) => {
 	var product = {
 		name: req.body.productName,
-		temperature: req.body.productTemp,
-		margin: req.body.productTempMargin
+		temperature: parseInt(req.body.productTemp),
+		margin: parseInt(req.body.productTempMargin)
 	};
 
 	req.db.get('devices').findAndModify({

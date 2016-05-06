@@ -16,9 +16,7 @@ module.exports = function (db) {
 	});
 
 	client.on('message', (topic, message) => {
-
-		console.log("Received " + topic, message.toString());
-
+		console.log("Received '" + topic + "'", message.toString());
 		switch (topic) {
 			case 'meditemp/gtvl2/temperature':
 			try {
